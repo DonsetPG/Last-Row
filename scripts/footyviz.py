@@ -1,9 +1,10 @@
 from matplotlib import pyplot as plt
 from matplotlib.patches import Ellipse
+from matplotlib.pyplot import arrow
 from matplotlib.collections import PatchCollection
 import matplotlib.patheffects as path_effects
 import numpy as np
-
+import math 
 from scipy.spatial import Voronoi
 from shapely.geometry import Polygon
 
@@ -83,7 +84,7 @@ def draw_patches(axes):
 
     return axes
 
-def draw_frame(df, t, dpi=100, fps=20, display_num=False, display_time=False, show_players=True,
+def draw_frame(df, t, dpi=100, fps=20, add_vector=False,display_num=False, display_time=False, show_players=True,
                highlight_color=None, highlight_player=None, shadow_player=None, text_color='white', flip=False, **anim_args):
     """
     Draws players from time t (in seconds) from a DataFrame df
@@ -128,6 +129,20 @@ def draw_frame(df, t, dpi=100, fps=20, display_num=False, display_time=False, sh
                                 facecolor=color,
                                 alpha=0.8,
                                 zorder=zorder))
+            
+            if add_vector:
+                
+                arrow_length = math.sqrt((dfFrame.loc[pid]['dx']**2 + dfFrame.loc[pid]['dy']**2))*20
+                color_arrow = 'white' if pid == 0 else color
+                plt.arrow(x=dfFrame.loc[pid]['x'],
+                         y=dfFrame.loc[pid]['y'],
+                         dx=dfFrame.loc[pid]['dx']*20,
+                         dy=dfFrame.loc[pid]['dy']*20,
+                         length_includes_head=True,
+                         color = color_arrow,
+                         edgecolor=edge,
+                         head_width=1,
+                         head_length=arrow_length/4.)
 
             try:
                 s = str(int(dfFrame.loc[pid]['player_num']))
